@@ -78,11 +78,14 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v1
     - name: Checkout kustomize repository
       uses: actions/checkout@v3
+    - name: Set env
+      run: echo "RELEASE_VERSION=${GITHUB_RUN_NUMBER}" >> $GITHUB_EN
     - name: Update Kubernetes resources
       run: |
         cd yaml
