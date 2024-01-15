@@ -77,19 +77,26 @@ jobs:
       #- name: Update kube config
       #  run: aws eks update-kubeconfig --name frodo --region ap-northeast-2
         
-      - name: Update Kubernetes resources
-        run: |
-          cd yaml
-          kustomize edit set image cicd-image=${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}
-          cat kustomization.yml
-              
-      - name: Commit & Push Image 
-        uses: actions-js/push@master
-        with:
-          message: '[DEPLOY] Update Image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
-          branch: master
-          github_token: ${{ secrets.TOKEN }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Kustomize
+      uses: imranismail/setup-kustomize@v1
+    - name: Checkout kustomize repository
+      uses: actions/checkout@v3
+    - name: Update Kubernetes resources
+      run: |
+        cd yaml
+        kustomize edit set image cicd-image=${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}
+    - name: Commit & Push Image 
+      uses: actions-js/push@master
+      with:
+        message: '[DEPLOY] Update Image ${{ env.BACKEND_ECR_REPOSITORY }}:${{ env.TAG }}'
+        branch: master
+        github_token: ${{ secrets.TOKEN }}
 
+        
       # - name: Commit changes
       #   uses: EndBug/add-and-commit@v9
       #   with:
