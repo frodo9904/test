@@ -21,7 +21,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3     
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_RUN_NUMBER}" >> $GITHUB_EN
+        run: echo "RELEASE_VERSION=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           
       - name: install jdk
         uses: actions/setup-java@v3
@@ -75,29 +75,19 @@ jobs:
       #- name: Update kube config
       #  run: aws eks update-kubeconfig --name frodo --region ap-northeast-2
         
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+      - name: Update Kubernetes resources
+        run: |
+          cd yaml
+          kustomize edit set image cicd-image=${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}
+          cat kustomization.yml
+              
+      - name: Commit & Push Image 
+        uses: actions-js/push@master
+        with:
+          message: '[DEPLOY] Update Image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
+          branch: master
+          github_token: ${{ secrets.TOKEN }}
 
-    steps:
-    - name: Setup Kustomize
-      uses: imranismail/setup-kustomize@v1
-    - name: Checkout kustomize repository
-      uses: actions/checkout@v3
-    - name: Set env
-      run: echo "RELEASE_VERSION=${GITHUB_RUN_NUMBER}" >> $GITHUB_EN
-    - name: Update Kubernetes resources
-      run: |
-        cd yaml
-        kustomize edit set image cicd-image=${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}
-    - name: Commit & Push Image 
-      uses: actions-js/push@master
-      with:
-        message: '[DEPLOY] Update Image ${{ env.BACKEND_ECR_REPOSITORY }}:${{ env.TAG }}'
-        branch: master
-        github_token: ${{ secrets.TOKEN }}
-
-        
       # - name: Commit changes
       #   uses: EndBug/add-and-commit@v9
       #   with:
