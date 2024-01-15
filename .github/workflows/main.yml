@@ -83,20 +83,20 @@ jobs:
           cat kustomization.yml
 
           
-      # - name: Commit & Push Image 
-      #   uses: actions-js/push@master
-      #   with:
-      #     message: '[DEPLOY] Update Image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
-      #     branch: main
-      #     github_token: ${{ secrets.TOKEN }}
-
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9
+      - name: Commit & Push Image 
+        uses: actions-js/push@master
         with:
-          author_name: hifrodo9904
-          author_email: hifrodo1@gmail.com
-          message: 'update image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
-          add: '.'
+          message: '[DEPLOY] Update Image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
+          branch: main
+          github_token: ${{ secrets.TOKEN }}
+
+      # - name: Commit changes
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     author_name: hifrodo9904
+      #     author_email: hifrodo1@gmail.com
+      #     message: 'update image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
+      #     add: '.'
       
       # - name: git push
       #   run: |
