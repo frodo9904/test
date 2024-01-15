@@ -4,7 +4,7 @@ name: CICD
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ master ]
     paths-ignore:
     - '.github/workflows/**'
     - 'yaml/**'
@@ -87,7 +87,7 @@ jobs:
         uses: actions-js/push@master
         with:
           message: '[DEPLOY] Update Image ${{ secrets.DOCKERHUB_USERNAME }}/rapa-cicdlab:v${{ env.RELEASE_VERSION }}'
-          branch: main
+          branch: master
           github_token: ${{ secrets.TOKEN }}
 
       # - name: Commit changes
