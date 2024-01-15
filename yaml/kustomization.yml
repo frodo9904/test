@@ -6,6 +6,6 @@ resources:
 - was.yaml
 images:
 - name: cicd-image
-  newName: hifrodo/rapa_was2
-  newTag: v1
+  newName: hifrodo/rapa-cicdlab
+  newTag: v9
 namespace: default
